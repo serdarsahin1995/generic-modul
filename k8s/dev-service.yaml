@@ -1,0 +1,22 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: generic-modul-dev-service
+  namespace: generic-modul
+  labels:
+    app: generic-modul-dev
+spec:
+  selector:
+    app: generic-modul-dev
+  ports:
+    - name: http
+      protocol: TCP
+      port: 80
+      targetPort: 8080
+      nodePort: 30081  # Development port
+    - name: debug
+      protocol: TCP
+      port: 5005
+      targetPort: 5005
+      nodePort: 30082  # Debug port
+  type: NodePort

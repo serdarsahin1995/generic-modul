@@ -1,0 +1,39 @@
+# Development Dockerfile with hot reload
+FROM openjdk:21-jdk-slim
+
+WORKDIR /app
+
+# Install Maven and development tools
+RUN apt-get update && \
+    apt-get install -y maven curl inotify-tools && \
+    apt-get clean && \
+    rm -rf /var/lib/apt/lists/*
+
+# Create non-root user
+RUN groupadd -r appuser && useradd -r -g appuser appuser
+
+# Copy project files
+COPY pom.xml .
+COPY src ./src
+
+# Install dependencies
+RUN mvn dependency:go-offline -B
+
+# Development script for hot reload
+COPY scripts/dev-start.sh /app/dev-start.sh
+RUN chmod +x /app/dev-start.sh
+
+# Change ownership
+RUN chown -R appuser:appuser /app
+
+USER appuser
+
+# Expose ports
+EXPOSE 8080 5005
+
+# Health check
+HEALTHCHECK --interval=30s --timeout=3s --start-period=30s --retries=3 \
+  CMD curl -f http://localhost:8080/ || exit 1
+
+# Run development mode
+CMD ["/app/dev-start.sh"]

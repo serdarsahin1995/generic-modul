@@ -1,0 +1,32 @@
+version: '3.8'
+
+services:
+  generic-modul:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: generic-modul-app
+    ports:
+      - "8080:8080"  # Host:Container
+    environment:
+      - SPRING_PROFILES_ACTIVE=docker
+      - JAVA_OPTS=-Xmx512m -Xms256m
+    volumes:
+      - app-logs:/app/logs
+    restart: unless-stopped
+    networks:
+      - app-network
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8080/"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+
+volumes:
+  app-logs:
+    driver: local
+
+networks:
+  app-network:
+    driver: bridge

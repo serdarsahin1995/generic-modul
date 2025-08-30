@@ -1,0 +1,61 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: generic-modul-dev
+  namespace: generic-modul
+  labels:
+    app: generic-modul-dev
+spec:
+  replicas: 1  # Development için tek instance
+  selector:
+    matchLabels:
+      app: generic-modul-dev
+  template:
+    metadata:
+      labels:
+        app: generic-modul-dev
+    spec:
+      containers:
+      - name: generic-modul
+        image: generic-modul:dev
+        imagePullPolicy: Never
+        ports:
+        - containerPort: 8080
+        env:
+        - name: SPRING_PROFILES_ACTIVE
+          value: "dev,kubernetes"
+        - name: JAVA_OPTS
+          value: "-Xmx512m -Xms256m -agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=*:5005"  # Debug port
+        volumeMounts:
+        - name: app-source
+          mountPath: /app/src
+        - name: app-target
+          mountPath: /app/target
+        resources:
+          requests:
+            memory: "512Mi"
+            cpu: "200m"
+          limits:
+            memory: "1Gi"
+            cpu: "1000m"
+        livenessProbe:
+          httpGet:
+            path: /
+            port: 8080
+          initialDelaySeconds: 60
+          periodSeconds: 30
+        readinessProbe:
+          httpGet:
+            path: /
+            port: 8080
+          initialDelaySeconds: 30
+          periodSeconds: 10
+      volumes:
+      - name: app-source
+        hostPath:
+          path: /home/pi/generic-modul/src
+          type: Directory
+      - name: app-target
+        hostPath:
+          path: /home/pi/generic-modul/target
+          type: DirectoryOrCreate

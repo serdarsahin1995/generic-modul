@@ -1,0 +1,47 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: generic-modul-deployment
+  namespace: generic-modul
+  labels:
+    app: generic-modul
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: generic-modul
+  template:
+    metadata:
+      labels:
+        app: generic-modul
+    spec:
+      containers:
+      - name: generic-modul
+        image: generic-modul:latest
+        imagePullPolicy: Never  # Local image için
+        ports:
+        - containerPort: 8080
+        env:
+        - name: SPRING_PROFILES_ACTIVE
+          value: "kubernetes"
+        - name: JAVA_OPTS
+          value: "-Xmx256m -Xms128m"  # Pi için düşük memory
+        resources:
+          requests:
+            memory: "256Mi"
+            cpu: "100m"
+          limits:
+            memory: "512Mi"
+            cpu: "500m"
+        livenessProbe:
+          httpGet:
+            path: /
+            port: 8080
+          initialDelaySeconds: 60
+          periodSeconds: 30
+        readinessProbe:
+          httpGet:
+            path: /
+            port: 8080
+          initialDelaySeconds: 30
+          periodSeconds: 10

@@ -1,0 +1,16 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: generic-modul-service
+  namespace: generic-modul
+  labels:
+    app: generic-modul
+spec:
+  selector:
+    app: generic-modul
+  ports:
+    - protocol: TCP
+      port: 80
+      targetPort: 8080
+      nodePort: 30080  # Pi'den dış erişim için
+  type: NodePort

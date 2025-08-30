@@ -1,0 +1,20 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: generic-modul-ingress
+  namespace: generic-modul
+  annotations:
+    kubernetes.io/ingress.class: "traefik"  # K3s varsayılan ingress
+    traefik.ingress.kubernetes.io/rewrite-target: /
+spec:
+  rules:
+  - host: generic-modul.local  # /etc/hosts'a ekle veya Pi IP'si kullan
+    http:
+      paths:
+      - path: /
+        pathType: Prefix
+        backend:
+          service:
+            name: generic-modul-service
+            port:
+              number: 80
