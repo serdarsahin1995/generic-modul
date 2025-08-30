@@ -7,7 +7,6 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 public class GenericModulApplication {
 
 	public static void main(String[] args) {
-        System.out.println("ss");
 		SpringApplication.run(GenericModulApplication.class, args);
 	}
 
