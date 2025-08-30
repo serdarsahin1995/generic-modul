@@ -17,8 +17,8 @@ spec:
     spec:
       containers:
       - name: generic-modul
-        image: generic-modul:latest
-        imagePullPolicy: Never  # Local image için
+        image: ghcr.io/serdarsahin1995/generic-modul:latest
+        imagePullPolicy: Always  # GHCR image için
         ports:
         - containerPort: 8080
         env:
