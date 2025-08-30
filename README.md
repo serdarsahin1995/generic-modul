@@ -289,4 +289,4 @@ ssh pi@<PI_IP> "netstat -tlnp | grep 8080"
 Mobil cihazlardan da test edebilirsin:
 - **Android**: Termux uygulaması ile curl
 - **iOS**: Shortcuts uygulaması ile HTTP Request
-- **Tarayıcı**: Direkt IP adresi ile erişim
+- **Tarayıcı**: Direkt IP adresi ile erişim# Test pipeline trigger
